@@ -7,6 +7,7 @@ import {
   startMongoConnection,
   closeMongoConnection
 } from './config/dbConnection/mongoDBConnection.js';
+import { prepareDBData } from './common/utils/service.js';
 
 const startServer = async () => {
   process.on('warning', warning =>
@@ -26,6 +27,8 @@ const startServer = async () => {
   const server = app.listen(port, () => {
     logger.info(`Server is running and listening on port ${port}`);
   });
+
+  await prepareDBData();
 
   process.on('SIGTERM', () => {
     logger.info('Received SIGTERM, shutting down gracefully...');

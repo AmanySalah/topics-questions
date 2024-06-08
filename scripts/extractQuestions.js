@@ -1,10 +1,16 @@
 import fs from 'fs';
+import path from 'path';
 import csv from 'csv-parser';
+import { fileURLToPath } from 'url';
 import nanoid from '../common/utils/nanoId.js';
 import TopicsModel from '../server/topics/model/index.js';
 import QuestionsModel from '../server/questions/model/index.js';
 
-export async function extractQuestions(filePath = '../sheets/questions.csv') {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const questionsFilePath = path.resolve(__dirname, '../sheets/questions.csv');
+
+export async function extractQuestions() {
   // await QuestionsModel.deleteMany();
   const questions = [];
 
@@ -16,7 +22,7 @@ export async function extractQuestions(filePath = '../sheets/questions.csv') {
   });
 
   return new Promise((resolve, reject) => {
-    fs.createReadStream(filePath)
+    fs.createReadStream(questionsFilePath)
       .pipe(csv())
       .on('data', row => {
         const questionNumber = parseInt(row['Question number']);
@@ -41,7 +47,7 @@ export async function extractQuestions(filePath = '../sheets/questions.csv') {
       .on('end', async () => {
         try {
           const docs = await QuestionsModel.insertMany(questions);
-          resolve(docs);
+          resolve(true);
         } catch (err) {
           reject(err);
         }

@@ -1,14 +1,20 @@
 import fs from 'fs';
+import path from 'path';
 import csv from 'csv-parser';
+import { fileURLToPath } from 'url';
 import nanoid from '../common/utils/nanoId.js';
 import TopicModel from '../server/topics/model/index.js';
 
-export async function extractTopics(filePath = '../sheets/topics.csv') {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const topicsFilePath = path.resolve(__dirname, '../sheets/topics.csv');
+
+export async function extractTopics() {
   // await TopicModel.deleteMany();
   const topicsMap = new Map();
 
   return new Promise((resolve, reject) => {
-    fs.createReadStream(filePath)
+    fs.createReadStream(topicsFilePath)
       .pipe(csv())
       .on('data', row => {
         const level1 = row['Topic Level 1']?.trim(); // Biological Molecules
@@ -60,7 +66,7 @@ export async function extractTopics(filePath = '../sheets/topics.csv') {
             subTopics: Array.from(topic.subTopics)
           }));
           const docs = await TopicModel.insertMany(topicsArray);
-          resolve(docs);
+          resolve(true);
         } catch (err) {
           reject(err);
         }
