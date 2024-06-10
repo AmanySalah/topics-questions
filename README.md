@@ -69,3 +69,13 @@ https://topics-questions-vo3j-p1zbd2fhp-amanysalahs-projects.vercel.app/api/v1/t
 - Provides an API to query questions by their topics and subtopics.
 - Indexed for efficient querying.
 
+## Illustration
+```
++----------------------+      +----------------------+
+|       Topic          |      |      Question        |
++----------------------+      +----------------------+
+| - _id: String        |      | - _id: String        |
+| - content: String    |      | - number: Number     |
+| - subTopics: [String]|<-----| - topicsIds: [String]|
++----------------------+      +----------------------+
+```
